@@ -1,15 +1,18 @@
-﻿import sys
-import time
-from scapy.all import sniff, IP
+﻿# Libraries
+import sys				
+import time 				# asks computer's CPU for exact time
+from scapy.all import sniff, IP		# loads Scapy, captures raw packets, and isolates network addresses
 
-traffic_baseline = {}
+
+traffic_baseline = {}			# if computer sends 50k bytes of data or more, flag it
 BURST_THRESHOLD_BYTES = 50000
 TIME_WINDOW_SECONDS = 2.0
 
-def analyze_metadata(packet):
-    if packet.haslayer(IP):
-        src_ip = packet[IP].src
-        dst_ip = packet[IP].dst
+def analyze_metadata(packet):		# if packet has ip address, send source IP, destination IP, packet size, time down to millisec
+ip_layer = packet.getlayer(IP)    
+if ip_layer:
+        src_ip = ip_layer.src
+        dst_ip = ip_layer.dst
         packet_size = len(packet)
         current_time = time.time()
 
